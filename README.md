@@ -39,5 +39,5 @@ Make sure you have a modern web browser installed (Chrome, Firefox, Edge, or Saf
 5. If all 9 squares are full and no player has 3 in a row, the game ends in a tie.
 
 ## Author
-* **Aleksandar** - *Initial work & development* - [Your GitHub Profile](https://github.com)
+* **Aleksandar** - *Initial work & development*
 
