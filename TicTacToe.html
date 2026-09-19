@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Tic Tac Toe</title>
+	<link rel="stylesheet" href="TicTacToe.css">
+</head>
+<body>
+	<main class="game-shell">
+		<section class="game-card" aria-labelledby="game-title">
+			<p class="eyebrow">Two player game</p>
+			<h1 id="game-title">Tic Tac Toe</h1>
+			<p id="status" class="status" aria-live="polite">X's turn</p>
+
+			<div id="board" class="board" role="grid" aria-label="Tic tac toe board">
+				<button class="cell" type="button" data-cell="0" role="gridcell" aria-label="Top left"></button>
+				<button class="cell" type="button" data-cell="1" role="gridcell" aria-label="Top center"></button>
+				<button class="cell" type="button" data-cell="2" role="gridcell" aria-label="Top right"></button>
+				<button class="cell" type="button" data-cell="3" role="gridcell" aria-label="Middle left"></button>
+				<button class="cell" type="button" data-cell="4" role="gridcell" aria-label="Center"></button>
+				<button class="cell" type="button" data-cell="5" role="gridcell" aria-label="Middle right"></button>
+				<button class="cell" type="button" data-cell="6" role="gridcell" aria-label="Bottom left"></button>
+				<button class="cell" type="button" data-cell="7" role="gridcell" aria-label="Bottom center"></button>
+				<button class="cell" type="button" data-cell="8" role="gridcell" aria-label="Bottom right"></button>
+			</div>
+
+			<button id="restart" class="restart" type="button">Restart game</button>
+		</section>
+	</main>
+
+	<script>
+		const cells = [...document.querySelectorAll('.cell')];
+		const status = document.querySelector('#status');
+		const restart = document.querySelector('#restart');
+		let currentPlayer = 'X';
+		let gameOver = false;
+
+		const winningLines = [
+			[0, 1, 2], [3, 4, 5], [6, 7, 8],
+			[0, 3, 6], [1, 4, 7], [2, 5, 8],
+			[0, 4, 8], [2, 4, 6]
+		];
+
+		function finishTurn() {
+			const values = cells.map((cell) => cell.textContent);
+			const winningLine = winningLines.find((line) =>
+				values[line[0]] && line.every((index) => values[index] === values[line[0]])
+			);
+
+			if (winningLine) {
+				gameOver = true;
+				status.textContent = `${currentPlayer} wins!`;
+				winningLine.forEach((index) => cells[index].classList.add('winner'));
+			} else if (values.every(Boolean)) {
+				gameOver = true;
+				status.textContent = 'It\'s a tie!';
+			} else {
+				currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+				status.textContent = `${currentPlayer}'s turn`;
+			}
+		}
+
+		function play(cell) {
+			if (gameOver || cell.textContent) return;
+			cell.textContent = currentPlayer;
+			cell.classList.add(currentPlayer.toLowerCase());
+			cell.setAttribute('aria-label', `${currentPlayer} played here`);
+			finishTurn();
+		}
+
+		function resetGame() {
+			currentPlayer = 'X';
+			gameOver = false;
+			status.textContent = "X's turn";
+			cells.forEach((cell) => {
+				cell.textContent = '';
+				cell.className = 'cell';
+			});
+		}
+
+		cells.forEach((cell) => cell.addEventListener('click', () => play(cell)));
+		restart.addEventListener('click', resetGame);
+	</script>
+</body>
+</html>
